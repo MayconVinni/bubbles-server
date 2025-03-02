@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 24 24" width="738" height="738">
+    <defs>
+        <radialGradient id="fill-grad" cx="25%" cy="25%" r="50%">
+            <stop offset="0%" stop-color="#8ebfe9" />
+            <stop offset="100%" stop-color="#499ee7" />
+        </radialGradient>
+    </defs>
+    <style>
+        circle {
+            fill: url(#fill-grad);
+            stroke: #c2dcf2;
+            stroke-width: 0.75;
+        }
+    </style>
+    <circle cx="7.2" cy="14.4" r="3.2"></circle>
+    <circle cx="14.8" cy="18" r="2"></circle>
+    <circle cx="15.2" cy="8.8" r="4.8"></circle>
+</svg>
