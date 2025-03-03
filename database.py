@@ -3,6 +3,59 @@ import hashlib
 import os
 
 USERS_DB = 'db/users.db'
+GUILDS_DB = 'db/guilds.db'
+
+
+def init_users():
+    conn = sqlite3.connect(USERS_DB)
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS user_auth (
+        id TEXT PRIMARY KEY NOT NULL,
+        salt TEXT NOT NULL,
+        hash TEXT NOT NULL
+    )
+    ''')
+    
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS user_info (
+        id TEXT PRIMARY KEY NOT NULL,
+        username TEXT UNIQUE NOT NULL,
+        display_name TEXT,
+        about_me TEXT,
+        FOREIGN KEY (id) REFERENCES user_auth (id)
+    )
+    ''')
+    
+    conn.commit()
+    conn.close()
+
+def init_guilds():
+    conn = sqlite3.connect(GUILDS_DB)
+    cursor = conn.cursor()
+    
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS user_auth (
+        id TEXT PRIMARY KEY NOT NULL,
+        salt TEXT NOT NULL,
+        hash TEXT NOT NULL
+    )
+    ''')
+    
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS user_info (
+        id TEXT PRIMARY KEY NOT NULL,
+        username TEXT UNIQUE NOT NULL,
+        display_name TEXT,
+        about_me TEXT,
+        FOREIGN KEY (id) REFERENCES user_auth (id)
+    )
+    ''')
+    
+    conn.commit()
+    conn.close()
+
 
 def generate_master_key(user_id: str, salt: str, password_hash: str) -> str:
     return '.'.join((
@@ -48,33 +101,6 @@ def validate_master_key(master_key: str) -> bool:
         return True
     
     return False
-
-
-def init_users():
-    conn = sqlite3.connect(USERS_DB)
-    cursor = conn.cursor()
-    
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS user_auth (
-        id TEXT PRIMARY KEY NOT NULL,
-        salt TEXT NOT NULL,
-        hash TEXT NOT NULL
-    )
-    ''')
-    
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS user_info (
-        id TEXT PRIMARY KEY NOT NULL,
-        username TEXT UNIQUE NOT NULL,
-        display_name TEXT,
-        about_me TEXT,
-        FOREIGN KEY (id) REFERENCES user_auth (id)
-    )
-    ''')
-    
-    conn.commit()
-    conn.close()
-
 
 def create_user(username: str, password: str, display_name: str | None) -> tuple[str, str]:
     user_id = os.urandom(16).hex()

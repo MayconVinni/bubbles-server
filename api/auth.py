@@ -1,8 +1,9 @@
 import database
 import re
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, request, jsonify
 from sqlite3 import Error as Sqlite3Error
 
+REQUIRED_PARAMS = ['username', 'password']
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 def _check_username(username: str) -> bool:
@@ -19,21 +20,23 @@ def register():
     
     data = request.get_json()
     
-    if not all(key in data for key in ['username', 'password']):
+    if not all(key in data for key in REQUIRED_PARAMS):
         return jsonify({'error': 'missing required fields'}), 400
     
-    username = str(data['username']).strip()
-    password = str(data['password']).strip()
+    
+    username = data['username'].strip()
+    password = data['password'].strip()
     display_name = data.get('display_name')
     
     if display_name is not None:
-        display_name = str(display_name).strip()
+        display_name = display_name.strip()
     
     if not _check_username(username):
         return jsonify({'error': 'invalid username (3-16 characters)'}), 400
     
     if len(password) < 4:
         return jsonify({'error': 'password too small (4 characters min)'}), 400
+    
     
     try:
         user_id, master_key = database.create_user(username, password, display_name)
@@ -60,11 +63,12 @@ def login():
     
     data = request.get_json()
     
-    if not all(key in data for key in ['username', 'password']):
+    if not all(key in data for key in REQUIRED_PARAMS):
         return jsonify({'error': 'missing required fields'}), 400
     
-    username = str(data['username']).strip()
-    password = str(data['password']).strip()
+    
+    username = data['username'].strip()
+    password = data['password'].strip()
     
     try:
         user_id, master_key = database.authenticate_user(username, password)
