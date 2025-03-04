@@ -1,3 +1,15 @@
 body {
     font-family: 'Helvetica', Arial, sans-serif;
 }
+
+.bubbles-title {
+    display: flex;
+    align-items: center;
+}
+
+.bubbles-icon {
+    /* display: inline-block; */
+    background-image: url('bubbles.svg');
+    width: 100px;
+    height: 100px;
+}
