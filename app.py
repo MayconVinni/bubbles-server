@@ -6,15 +6,15 @@ from api import api
 app = Flask(__name__)
 app.register_blueprint(api)
 
-os.makedirs('db/', exist_ok=True)
-database.init_users()
+for path in ('db/', 'uploads/avatar/'):
+    os.makedirs(path, exist_ok=True)
 
-@app.route('/', methods=['GET'])
+database.init()
+
+
+@app.route('/')
 def index():
-    return send_from_directory('static/pages', 'index.html')
+    return send_from_directory('static/html', 'index.html')
 
 if __name__ == '__main__':
-    app.run(
-        host='0.0.0.0',
-        port=8000
-    )
+    app.run(host='0.0.0.0', port=8000)
