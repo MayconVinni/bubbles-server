@@ -24,6 +24,9 @@ requires `master_key`
     - [x] /create
     - [ ] /update
 
+- [ ] /guilds/<guild_id>/roles
+    - [ ] /create
+
 - [ ] /guilds/<guild_id>/channels
     - [ ] /create
 
