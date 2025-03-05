@@ -1,21 +1,49 @@
+# To-Do
+
 ## API
 
 The API is where the client will make requests.
+
+Everything (except `/auth/register` and `/auth/login`)
+requires `master_key`
 
 - [ ] /auth
     - [x] /register
     - [x] /login
     - [ ] /password (change password)
+
 - [ ] /users
     - [ ] /update
-    - [ ] /info/<user_id>
+
+- [ ] /users/<user_id>
+    - [ ] /info
+
+---
+
 - [ ] /guilds
+    - [x] /create
+    - [ ] /update
+
+- [ ] /guilds/<guild_id>/channels
+    - [ ] /create
+
+- [ ] /guilds/<guild_id>/channels/<channel_id>/messages/
+    - [ ] /send
+    - [ ] /info/<message_id>
+    - [ ] /edit/<message_id>
+
+---
+
+- [ ] /groups
     - [ ] /create
     - [ ] /update
 
-- [ ] /files
-    - [ ] /upload
+- [ ] /groups/<group_id>/messages/
+    - [ ] /send
+    - [ ] /info/<message_id>
+    - [ ] /edit/<message_id>
 
-- [ ] /messages/
-    - [ ] /send/<guild_id>/<channel_id>
-    - [ ] /info/<guild_id>/<channel_id>/<message_id>
+---
+
+- [ ] /attachments
+    - [ ] /upload

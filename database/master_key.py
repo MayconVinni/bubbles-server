@@ -19,12 +19,12 @@ def validate_masterkey(master_key):
         
         cursor.execute('''
             SELECT
-                auth.salt,
-                auth.hash
+                salt,
+                hash
             FROM
-                auths auth
+                auths
             WHERE
-                auth.id = ?
+                id = ?
         ''', (parts[0],))
         
         result = cursor.fetchone()
@@ -33,8 +33,8 @@ def validate_masterkey(master_key):
         salt = result['salt']
         pass_hash = result['hash']
         
-        hashed_id = hashlib.sha1((parts[0] + salt).encode()).hexdigest(),
-        hashed_salt = hashlib.sha224((salt + salt).encode()).hexdigest(),
+        hashed_id = hashlib.sha1((parts[0] + salt).encode()).hexdigest()
+        hashed_salt = hashlib.sha224((salt + salt).encode()).hexdigest()
         hashed_hash = hashlib.sha256((pass_hash + salt).encode()).hexdigest()
         
         if parts[1] == hashed_id   and \

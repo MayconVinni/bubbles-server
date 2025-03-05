@@ -3,11 +3,9 @@ CREATE TABLE IF NOT EXISTS infos (
     owner_id TEXT NOT NULL,
     
     creation_date REAL NOT NULL,
-    icon TEXT,
     name TEXT NOT NULL,
     description TEXT,
     invite TEXT UNIQUE,
-    invite_only BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE IF NOT EXISTS members (
@@ -16,30 +14,6 @@ CREATE TABLE IF NOT EXISTS members (
     
     join_date REAL NOT NULL,
     nickname TEXT,
-    muted BOOLEAN NOT NULL DEFAULT FALSE,
-    
-    FOREIGN KEY (guild_id)
-    REFERENCES infos (id)
-);
-
-CREATE TABLE IF NOT EXISTS roles (
-    id TEXT PRIMARY KEY NOT NULL,
-    guild_id TEXT NOT NULL,
-    
-    name TEXT NOT NULL,
-    color INTEGER NOT NULL,
-    
-    FOREIGN KEY (guild_id)
-    REFERENCES infos (id)
-);
-
-CREATE TABLE IF NOT EXISTS channels (
-    id TEXT PRIMARY KEY NOT NULL,
-    guild_id TEXT NOT NULL,
-    
-    type INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    description TEXT,
     
     FOREIGN KEY (guild_id)
     REFERENCES infos (id)
@@ -63,6 +37,7 @@ CREATE TABLE IF NOT EXISTS attachments (
     
     name TEXT NOT NULL,
     path TEXT NOT NULL,
+    salt TEXT NOT NULL,
     
     FOREIGN KEY (message_id)
     REFERENCES messages (id)

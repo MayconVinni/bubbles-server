@@ -5,7 +5,7 @@ import os
 from . import master_key as mk
 from constants import DATABASE, URANDOM_SIZE
 
-def create_user(username, password, display_name, about_me):
+def create_user(username, password, display_name, description):
     user_id = os.urandom(URANDOM_SIZE['USER_ID']).hex()
     salt = os.urandom(URANDOM_SIZE['SALT']).hex()
     password_hash = hashlib.sha512((password + salt).encode()).hexdigest()
@@ -27,10 +27,10 @@ def create_user(username, password, display_name, about_me):
             cursor.execute('''
                 INSERT INTO
                     infos
-                    (id, username, display_name, about_me, creation_date)
+                    (id, username, display_name, description, creation_date, avatar)
                 VALUES
-                    (?, ?, ?, ?, ?)
-            ''', (user_id, username, display_name, about_me, creation_date))
+                    (?, ?, ?, ?, ?, NULL)
+            ''', (user_id, username, display_name, description, creation_date))
         except sqlite3.IntegrityError:
             raise sqlite3.IntegrityError('username already exists', 409)
         
@@ -43,7 +43,8 @@ def create_user(username, password, display_name, about_me):
             'creation_date': creation_date,
             'username': username,
             'display_name': display_name,
-            'about_me': about_me
+            'avatar': None,
+            'description': description
         }
     }
 
@@ -80,13 +81,14 @@ def authenticate_user(username, password):
         
         cursor.execute('''
             SELECT
-                info.display_name,
-                info.about_me,
-                info.creation_date
+                display_name,
+                description,
+                avatar,
+                creation_date
             FROM
-                infos info
+                infos
             WHERE
-                info.username = ?
+                username = ?
         ''', (username,))
         
         info_result = cursor.fetchone()
@@ -98,28 +100,28 @@ def authenticate_user(username, password):
             'creation_date': info_result['creation_date'],
             'username': username,
             'display_name': info_result['display_name'],
-            'about_me': info_result['about_me']
+            'avatar': info_result['avatar'],
+            'description': info_result['description']
         }
     }
 
 
-def get_user_info(master_key, user_id):
-    
-    
+def get_user_info(user_id):
     with sqlite3.connect(DATABASE['USERS']) as conn:
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
         
         cursor.execute('''
             SELECT
-                info.creation_date,
-                info.username,
-                info.display_name,
-                info.about_me
+                creation_date,
+                username,
+                display_name,
+                avatar,
+                description
             FROM
-                infos info
+                infos
             WHERE
-                info.id = ?
+                id = ?
         ''', (user_id,))
         
         result = cursor.fetchone()

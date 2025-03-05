@@ -2,17 +2,10 @@ import database
 import re
 from flask import Blueprint, request, jsonify
 from sqlite3 import Error as Sqlite3Error
-from constants import MAX_LENGTH, MIN_LENGTH
+from constants import MAX_LENGTH, MIN_LENGTH, REGEX
 
 REQUIRED_PARAMS = ['username', 'password']
 auth = Blueprint('auth', __name__, url_prefix='/auth')
-
-def _check_username(username):
-    if not MIN_LENGTH['USER_NAME'] <= len(username) <= MAX_LENGTH['USER_NAME']:
-        return False
-    
-    return bool(re.match(r'^[a-zA-Z0-9._-]+$', username))
-
 
 @auth.route('/register', methods=['POST'])
 def register():
@@ -28,30 +21,33 @@ def register():
     username = data['username'].strip()
     password = data['password'].strip()
     display_name = data.get('display_name')
-    about_me = data.get('about_me')
+    description = data.get('description')
     
-    if display_name is not None:
-        display_name = display_name.strip()
-        
-        if len(display_name) > MAX_LENGTH['USER_DISPLAYNAME']:
-            return jsonify({'error': f'display_name too big (max: {MAX_LENGTH["USER_DISPLAYNAME"]})'}), 400
+    if len(username) > MAX_LENGTH['USER_NAME'] or \
+       len(username) < MIN_LENGTH['USER_NAME']:
+        return jsonify({'error': f'username too big or small ({MIN_LENGTH["USER_NAME"]}-{MAX_LENGTH["USER_NAME"]} characters)'}), 400
     
-    if about_me is not None:
-        about_me = about_me.strip()
-        
-        if len(about_me) > MAX_LENGTH['USER_ABOUTME']:
-            return jsonify({'error': f'about_me too big (max: {MAX_LENGTH["USER_ABOUTME"]})'}), 400
-    
-    
-    if not _check_username(username):
-        return jsonify({'error': f'invalid username ({MIN_LENGTH["USER_NAME"]}-{MAX_LENGTH["USER_NAME"]} characters)'}), 400
+    elif not re.match(REGEX['LIMITED_CHARACTERS'], username):
+        return jsonify({'error': f'username {REGEX["LIMITED_CHARACTERS_ERROR"]}'}), 400
     
     if len(password) < MIN_LENGTH['PASSWORD']:
         return jsonify({'error': f'password too small ({MIN_LENGTH["PASSWORD"]} characters min)'}), 400
     
+    if display_name is not None:
+        display_name = display_name.strip()
+        
+        if len(display_name) > MAX_LENGTH['USER_DISPLAYNAME'] or len(display_name) < 1:
+            return jsonify({'error': f'display_name too big or small (max: {MAX_LENGTH["USER_DISPLAYNAME"]})'}), 400
+    
+    if description is not None:
+        description = description.strip()
+        
+        if len(description) > MAX_LENGTH['USER_DESCRIPTION'] or len(description) < 1:
+            return jsonify({'error': f'description too big or small (max: {MAX_LENGTH["USER_DESCRIPTION"]})'}), 400
+    
     
     try:
-        user_data = database.create_user(username, password, display_name, about_me)
+        user_data = database.create_user(username, password, display_name, description)
         
         return jsonify(user_data), 201
     
@@ -74,6 +70,9 @@ def login():
     
     username = data['username'].strip()
     password = data['password'].strip()
+    
+    if len(username) < 1 or len(password) < 1:
+        return jsonify({'error': 'username or/and password empty'}), 400
     
     try:
         user_data = database.authenticate_user(username, password)

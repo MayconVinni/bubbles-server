@@ -8,7 +8,9 @@ from .users import create_user, authenticate_user
 def init():
     FILES = [
         (DATABASE['USERS'], 'sql/init_users.sql'),
-        (DATABASE['GUILDS'], 'sql/init_guilds.sql')
+        (DATABASE['GUILDS'], 'sql/init_guilds.sql'),
+        (DATABASE['GROUPS'], 'sql/init_groups.sql'),
+        (DATABASE['DIRECT_MESSAGES'], 'sql/init_dms.sql'),
     ]
     
     for FILE in FILES:

@@ -6,7 +6,14 @@ from api import api
 app = Flask(__name__)
 app.register_blueprint(api)
 
-for path in ('db/', 'uploads/avatar/'):
+paths = (
+    'db/',
+    'uploads/avatar/',
+    'uploads/guild_icon/',
+    'uploads/group_icon/',
+)
+
+for path in paths:
     os.makedirs(path, exist_ok=True)
 
 database.init()

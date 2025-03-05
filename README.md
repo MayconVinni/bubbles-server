@@ -1,0 +1,9 @@
+# bubbles-server
+
+This is my first time creating a Discord clone and using
+[`sqlite3`](https://docs.python.org/3.12/library/sqlite3.html).
+
+To interact with the server, you can download
+[`bubbles-client`](https://github.com/MayconVinni/bubbles-client).
+
+You can easily change the value from something on `constants.py`.
